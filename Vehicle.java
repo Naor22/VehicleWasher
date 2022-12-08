@@ -5,7 +5,6 @@ abstract class Vehicle extends Thread {
     private double arrival_time = Runner.arrival_time;
     private double wash_time = Runner.wash_time;
     private boolean done;
-    private static int counter = 0;
     long startTime = System.nanoTime();
 
     public Vehicle(int lp, String model) {
@@ -34,13 +33,28 @@ abstract class Vehicle extends Thread {
         return license_plate;
     }
 
+    public void sumTime(int time) {
+        if (this instanceof Car) {
+            VehicleWasher.carTime += time;
+        }
+        if (this instanceof Suv) {
+            VehicleWasher.suvTime += time;
+        }
+        if (this instanceof MiniBus) {
+            VehicleWasher.minibusTime += time;
+        }
+        if (this instanceof Truck) {
+            VehicleWasher.truckTime += time;
+        }
+    }
+
     public void run() {
         while (done == false) {
 
             if (!Runner.WashShop.car_arrived(this)) {
                 double U = Math.random();
                 double nextTime = (-Math.log(U)) / arrival_time;
-                int finalTime = (int) (nextTime * 10000000);
+                int finalTime = (int) (nextTime * 3000);
                 try {
                     Thread.sleep(finalTime);
                 } catch (InterruptedException e) {
@@ -54,7 +68,8 @@ abstract class Vehicle extends Thread {
                 if (Runner.WashShop.get_washlist().search(this)) {
                     double U = Math.random();
                     double nextTime = -(Math.log(U)) / wash_time;
-                    int finalTime = (int) (nextTime * 10000000);
+                    int finalTime = (int) (nextTime * 9000);
+                    sumTime(finalTime);
                     try {
                         Thread.sleep(finalTime);
                     } catch (Exception e) {
