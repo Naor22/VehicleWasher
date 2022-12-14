@@ -27,7 +27,7 @@ public class VehicleWasher {
 
 
 
-    public VehicleWasher(int stations, int total_cars) {
+    public VehicleWasher(int stations, int total_cars) { // Constructor
         this.total_cars = total_cars;
         if (stations > 0) {
             available_stations = stations;
@@ -43,78 +43,78 @@ public class VehicleWasher {
         logger.writeFile(loggerStr);
     }
 
-    public boolean car_arrived(Vehicle ve) {
+    public boolean car_arrived(Vehicle ve) { // Checks if the car exists in the waiting list or the washing list
         if (waiting_vehicles.search(ve) || wash_vehicles.search(ve))
             return true;
         return false;
     }
 
-    public int get_avail_stations() {
+    public int get_avail_stations() { // returns the amount of available stations
         return available_stations;
     }
 
-    public vehicleList<Vehicle> get_waitinglist() {
+    public vehicleList<Vehicle> get_waitinglist() { // returns the waiting list
         return waiting_vehicles;
     }
 
-    public vehicleList<Vehicle> get_washlist() {
+    public vehicleList<Vehicle> get_washlist() { 
         return wash_vehicles;
     }
 
-    public synchronized void enter_shop(Vehicle ve) {
-        while (enter) {
+    public synchronized void enter_shop(Vehicle ve) { // adds the vehicle to the waiting list
+        while (enter) { // waits as long as other threads are using this function
             try {
                 wait();
             } catch (Exception e) {
             }
         }
         enter = true;
-        waiting_vehicles.insert_car_bottom(ve);
+        waiting_vehicles.insert_car_bottom(ve); // inserts the car to the waiting list
         long duration = watch.time(TimeUnit.SECONDS);
         String nowTime = String.format("%d:%02d:%02d", duration / 3600, (duration % 3600) / 60, (duration % 60));
         loggerStr = "========== [ " + nowTime + " ] ==========\n - Thread ID - " + ve.getId() + "\n - " +
                 ve.get_vehicle_details() + " - Entered the shop\n=================================\n";
-        System.out.println(loggerStr);
+        System.out.println(loggerStr); // prints the data
         System.out.println();
-        logger.writeFile(loggerStr);
-        enter = false;
+        logger.writeFile(loggerStr); // logs the data
+        enter = false; // releases the function and notifying other threads
         notifyAll();
     }
 
     public synchronized void wait_to_wash(Vehicle ve) {
-        if (available_stations > 0) {
-            while (wash) {
+        if (available_stations > 0) { // Checks if there are any available washing stations
+            while (wash) { // waits as long as other threads are using this function
                 try {
                     wait();
                 } catch (Exception e) {
                 }
             }
             wash = true;
-            waiting_vehicles.remove(ve);
-            wash_vehicles.insert_car_bottom(ve);
-            available_stations--;
+            waiting_vehicles.remove(ve); // Removes the vehicle from the waiting list
+            wash_vehicles.insert_car_bottom(ve); // Inserts the vehicle to the washing list
+            available_stations--; // decreasing the amount of the available stations
             long duration = watch.time(TimeUnit.SECONDS);
             String nowTime = String.format("%d:%02d:%02d", duration / 3600, (duration % 3600) / 60, (duration % 60));
             loggerStr = "============== [ " + nowTime + " ] ==============\n - Thread ID - " + ve.getId() + "\n - " +
                     ve.get_vehicle_details() + " - Entered wash station #" + (available_stations + 1)
                     + "\n=========================================\n";
-            logger.writeFile(loggerStr);
-            System.out.println(loggerStr);
+            logger.writeFile(loggerStr); // logs the data
+            System.out.println(loggerStr); // printing the data
             System.out.println();
-            wash = false;
+            wash = false; // releasing the function and notifying the other threads
             notifyAll();
         }
     }
 
     public synchronized void wash_to_done(Vehicle ve) {
-        while (done) {
+        while (done) { // waits as long as other threads are using this function
             try {
                 wait();
             } catch (Exception e) {
             }
         }
         done = true;
-        switch (ve.get_model()) {
+        switch (ve.get_model()) { // Switch case to check the vehicle type, and then inserts the vehicle to the right list
             case "Car":
                 cars.insert_car_top((Car) ve);
                 break;
@@ -128,11 +128,9 @@ public class VehicleWasher {
                 trucks.insert_car_top((Truck) ve);
                 break;
         }
-        wash_vehicles.remove(ve);
-        ve.setDone(true);
-        available_stations++;
-        done = false;
-        notifyAll();
+        wash_vehicles.remove(ve); // Removes the vehicle from the washing list
+        ve.setDone(true); // Sets the vehicle 'done' attribute to true, which means the thread finished his work
+        available_stations++; // increasing the amount of the available stations
         long duration = watch.time(TimeUnit.SECONDS);
         String nowTime = String.format("%d:%02d:%02d", duration / 3600, (duration % 3600) / 60, (duration % 60));
         loggerStr = "========== [ " + nowTime + " ] ==========\n - Thread ID - " + ve.getId() + "\n - " +
@@ -141,6 +139,8 @@ public class VehicleWasher {
         System.out.println();
         logger.writeFile(loggerStr);
         total_cars--;
+        done = false; // releasing the function and notifying the other threads
+        notifyAll();
         if (total_cars == 0) {
             if(Runner.carA == 0) Runner.carA = 1;
             if(Runner.minibusA == 0) Runner.minibusA = 1;

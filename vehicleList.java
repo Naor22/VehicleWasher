@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
-public class vehicleList<T> {
+public class vehicleList<T> { 
+    //VehicleList data structure, its an arraylist with some added functions and different name for convenience 
     private ArrayList<T> cars = new ArrayList<T>();
     
     public int getSize() {

@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class VehicleLogger {
-
+    // Logger class will edit the log file with new logs real time
     public void writeFile(String str) {
         FileWriter writer;
         File log = new File("log.txt");
