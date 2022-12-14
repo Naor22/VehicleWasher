@@ -1,6 +1,6 @@
 import java.util.concurrent.TimeUnit;
 
-public class TimeWatch {    
+public class TimeWatch { // TimeWatch class to calculate elapsed time
     long starts;
 
     public static TimeWatch start() {

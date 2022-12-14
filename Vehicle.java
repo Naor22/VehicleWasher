@@ -7,7 +7,7 @@ abstract class Vehicle extends Thread {
     private boolean done;
     long startTime = System.nanoTime();
 
-    public Vehicle(int lp, String model) {
+    public Vehicle(int lp, String model) { // Contructor
         this.model = model;
         done = false;
         if (lp > 0) {
@@ -33,7 +33,7 @@ abstract class Vehicle extends Thread {
         return license_plate;
     }
 
-    public void sumTime(int time) {
+    public void sumTime(int time) { // Create sum of each vehicle type wash time
         if (this instanceof Car) {
             VehicleWasher.carTime += time;
         }
@@ -49,9 +49,10 @@ abstract class Vehicle extends Thread {
     }
 
     public void run() {
-        while (done == false) {
+        while (done == false) { // runs as long as the car is still not washed
 
-            if (!Runner.WashShop.car_arrived(this)) {
+            // checks if the car arrived to the shop already, if not the thread will sleep and then will call the enter_shop function
+            if (!Runner.WashShop.car_arrived(this)) { 
                 double U = Math.random();
                 double nextTime = (-Math.log(U)) / arrival_time;
                 int finalTime = (int) (nextTime * 3000);
@@ -61,10 +62,13 @@ abstract class Vehicle extends Thread {
                     e.printStackTrace();
                 }
                 Runner.WashShop.enter_shop(this);
-            } else {
+            } else { 
+                
+                // if the car is in the shop it checks if its the first element in the waiting list, if so it calls the wait_to_wash function
                 if (Runner.WashShop.get_waitinglist().isFirst(this)) {
                     Runner.WashShop.wait_to_wash(this);
                 }
+                // if its in the washlist, it sleeps and then calls the wash_to_done function
                 if (Runner.WashShop.get_washlist().search(this)) {
                     double U = Math.random();
                     double nextTime = -(Math.log(U)) / wash_time;
