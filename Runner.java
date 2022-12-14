@@ -1,3 +1,4 @@
+// Naor Ben Azra - 318544939 && Osher Ben Hamo - 209264076
 import java.util.Random;
 import java.util.Scanner;
 

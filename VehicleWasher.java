@@ -1,3 +1,4 @@
+// Naor Ben Azra - 318544939 && Osher Ben Hamo - 209264076
 import java.util.concurrent.TimeUnit;
 import java.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
@@ -141,7 +142,7 @@ public class VehicleWasher {
         total_cars--;
         done = false; // releasing the function and notifying the other threads
         notifyAll();
-        if (total_cars == 0) {
+        if (total_cars == 0) { // Checks if its the last car, if so it calculates the avg wash time for each car and then logs/prints the data
             if(Runner.carA == 0) Runner.carA = 1;
             if(Runner.minibusA == 0) Runner.minibusA = 1;
             if(Runner.suvA == 0) Runner.suvA = 1;
@@ -151,8 +152,6 @@ public class VehicleWasher {
             double mTime = (minibusTime / Runner.minibusA) / 1000;
             double sTime = (suvTime / Runner.suvA) / 1000;
             double tTime = (truckTime / Runner.truckA) / 1000;
-
-
 
             loggerStr = "\n\nCar List : " + cars.toString() + " Average time : " + df.format(cTime) + " Seconds" +
             "\nSuv List : " + suvs + " Average time : " + df.format(sTime) + " Seconds" +

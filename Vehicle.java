@@ -1,4 +1,4 @@
-
+// Naor Ben Azra - 318544939 && Osher Ben Hamo - 209264076
 abstract class Vehicle extends Thread {
     private int license_plate;
     private String model;
